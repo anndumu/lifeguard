@@ -6,6 +6,7 @@ const practiceStart = document.getElementById("practice-start");
 const practiceLoading = document.getElementById("practice-loading");
 const practiceGame = document.getElementById("practice-game");
 const practiceProgress = document.getElementById("practice-progress");
+const practiceSender = document.getElementById("practice-sender");
 const practiceMessage = document.getElementById("practice-message");
 const practiceButtons = document.getElementById("practice-buttons");
 const practiceFeedback = document.getElementById("practice-feedback");
@@ -18,6 +19,7 @@ const practiceScore = document.getElementById("practice-score");
 let practiceQuestions = [];
 let questionNumber = 0;
 let score = 0;
+let recentKinds = []; // kinds of messages already shown, so the next round is different (memory only)
 
 practiceStart.addEventListener("click", startPractice);
 document.getElementById("practice-again").addEventListener("click", startPractice);
@@ -43,7 +45,11 @@ async function startPractice() {
   practiceLoading.hidden = false;
 
   try {
-    const response = await fetch("/api/practice", { method: "POST" });
+    const response = await fetch("/api/practice", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ recentKinds: recentKinds }),
+    });
     if (!response.ok) {
       throw new Error("Practice failed");
     }
@@ -52,6 +58,12 @@ async function startPractice() {
       throw new Error("No questions");
     }
     practiceQuestions = data.questions;
+    for (const question of practiceQuestions) {
+      if (question.kind) {
+        recentKinds.push(question.kind);
+      }
+    }
+    recentKinds = recentKinds.slice(-15);
   } catch (error) {
     practiceQuestions = pickRandom(PRACTICE_MESSAGES, 5);
   }
@@ -65,6 +77,16 @@ async function startPractice() {
 function showQuestion() {
   const question = practiceQuestions[questionNumber];
   practiceProgress.textContent = "Message " + (questionNumber + 1) + " of " + practiceQuestions.length;
+
+  // Show it like a phone or inbox would: "Text message from (555) 014-2290"
+  if (question.channel || question.sender) {
+    const channel = question.channel ? question.channel.charAt(0).toUpperCase() + question.channel.slice(1) : "Message";
+    practiceSender.textContent = channel + (question.sender ? " from " + question.sender : "");
+    practiceSender.hidden = false;
+  } else {
+    practiceSender.hidden = true;
+  }
+
   practiceMessage.textContent = question.message;
   practiceButtons.hidden = false;
   practiceFeedback.hidden = true;

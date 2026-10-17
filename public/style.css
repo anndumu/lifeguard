@@ -820,3 +820,9 @@ select:focus {
     transform: none;
   }
 }
+
+.practice-sender {
+  margin: 12px 0 8px;
+  font-weight: 700;
+  color: var(--soft-text);
+}
