@@ -1,6 +1,7 @@
 const EXAMPLES = [
   {
     label: "Toll bill text",
+    image: "https://images.unsplash.com/photo-1773649966821-15d8cb86d024?w=600&q=70&auto=format&fit=crop",
     message: "E-ZPass FINAL NOTICE: You have an unpaid toll of $4.15. Pay within 24 hours to avoid a $50 late fee and suspension of your license: https://ezpass-tollpay.top/pay",
     backup: {
       verdict: "scam",
@@ -21,6 +22,7 @@ const EXAMPLES = [
   },
   {
     label: "Grandchild in trouble",
+    image: "https://images.unsplash.com/photo-1758874960180-996bc2523a37?w=600&q=70&auto=format&fit=crop",
     message: "Grandma it's me. I got in a car accident and I'm in jail. Please don't tell Mom. I need $2,000 for bail right away. The lawyer says you can pay with gift cards from the store.",
     backup: {
       verdict: "scam",
@@ -40,6 +42,7 @@ const EXAMPLES = [
   },
   {
     label: "Wrong number text",
+    image: "https://images.unsplash.com/photo-1609535141153-c3355ad0dce0?w=600&q=70&auto=format&fit=crop",
     message: "Hi, is this Margaret? This is Kevin from the golf club. Sorry if I have the wrong number!",
     backup: {
       verdict: "suspicious",
@@ -57,6 +60,7 @@ const EXAMPLES = [
   },
   {
     label: "Pharmacy reminder",
+    image: "https://images.unsplash.com/photo-1562243061-204550d8a2c9?w=600&q=70&auto=format&fit=crop",
     message: "Maple Street Pharmacy: Your prescription is ready for pickup. Store hours are 9am to 7pm. Reply STOP to opt out.",
     backup: {
       verdict: "safe",

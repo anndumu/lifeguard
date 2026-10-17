@@ -1,52 +1,87 @@
 const messageBox = document.getElementById("message");
 const photoInput = document.getElementById("photo");
+const photoName = document.getElementById("photo-name");
+const answerBox = document.getElementById("answer");
+const emptyText = document.getElementById("empty");
 const loadingText = document.getElementById("loading");
 const errorText = document.getElementById("error");
 const resultBox = document.getElementById("result");
 
 const VERDICT_WORDS = {
-  scam: "This is a scam",
-  suspicious: "Be careful: this looks suspicious",
-  safe: "This looks safe",
+  scam: "Red flag: this is a scam",
+  suspicious: "Yellow flag: be careful",
+  safe: "Green flag: this looks safe",
 };
 
 let currentResult = null;
 
 for (const example of EXAMPLES) {
-  const button = document.createElement("button");
-  button.textContent = example.label;
-  button.addEventListener("click", function () {
+  const card = document.createElement("button");
+  card.className = "example";
+
+  const image = document.createElement("img");
+  image.src = example.image;
+  image.alt = "";
+  image.onerror = function () {
+    image.hidden = true;
+  };
+
+  const label = document.createElement("span");
+  label.textContent = example.label;
+
+  card.appendChild(image);
+  card.appendChild(label);
+  card.addEventListener("click", function () {
     messageBox.value = example.message;
-    photoInput.value = "";
+    clearPhoto();
+    checkMessage({ text: example.message });
   });
-  document.getElementById("examples").appendChild(button);
+  document.getElementById("examples").appendChild(card);
+}
+
+photoInput.addEventListener("change", function () {
+  const photo = photoInput.files[0];
+  if (!photo) {
+    return;
+  }
+
+  photoName.textContent = "Screenshot: " + photo.name;
+  photoName.hidden = false;
+
+  if (photo.size > 3000000) {
+    showError("That picture is too large. Try a smaller screenshot.");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function () {
+    const base64 = reader.result.split(",")[1];
+    checkMessage({ image: base64, mimeType: photo.type });
+  };
+  reader.readAsDataURL(photo);
+  photoInput.value = "";
+});
+
+function clearPhoto() {
+  photoInput.value = "";
+  photoName.hidden = true;
 }
 
 document.getElementById("check-button").addEventListener("click", function () {
-  const photo = photoInput.files[0];
-
-  if (photo) {
-    if (photo.size > 3000000) {
-      showError("That picture is too big. Please try a smaller screenshot.");
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = function () {
-      const base64 = reader.result.split(",")[1];
-      checkMessage({ image: base64, mimeType: photo.type });
-    };
-    reader.readAsDataURL(photo);
-  } else if (messageBox.value.trim() !== "") {
+  if (messageBox.value.trim() !== "") {
+    clearPhoto();
     checkMessage({ text: messageBox.value });
   } else {
-    showError("Please paste a message or upload a screenshot first.");
+    showError("Paste a message first, or check a screenshot instead.");
   }
 });
 
 async function checkMessage(input) {
+  emptyText.hidden = true;
   resultBox.hidden = true;
   errorText.hidden = true;
   loadingText.hidden = false;
+  showAnswerBox();
 
   try {
     const response = await fetch("/api/check", {
@@ -64,11 +99,19 @@ async function checkMessage(input) {
     if (backup) {
       showResult(backup, input.text);
     } else {
-      showError("Sorry, Lifeguard couldn't check that right now. Please try again in a minute.");
+      showError("Lifeguard couldn't check this right now. Wait a minute, then press \"Check this message\" again.");
     }
   }
 
   loadingText.hidden = true;
+}
+
+function showAnswerBox() {
+  const top = answerBox.getBoundingClientRect().top;
+  if (top < 0 || top > window.innerHeight / 2) {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    answerBox.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+  }
 }
 
 function findBackup(text) {
@@ -110,7 +153,7 @@ function showResult(result, originalText) {
     addListItem(flagList, "\"" + flag.phrase + "\": " + flag.reason);
   }
   if (redFlags.length === 0) {
-    addListItem(flagList, "No red flags found.");
+    addListItem(flagList, "No warning signs found.");
   }
 
   const stepList = document.getElementById("what-to-do");
@@ -129,7 +172,9 @@ function addListItem(list, text) {
 }
 
 function showError(message) {
+  emptyText.hidden = true;
   loadingText.hidden = true;
+  resultBox.hidden = true;
   errorText.textContent = message;
   errorText.hidden = false;
 }
@@ -149,3 +194,18 @@ document.getElementById("read-button").addEventListener("click", function () {
 document.getElementById("family-button").addEventListener("click", function () {
   window.location.href = "sms:?&body=" + encodeURIComponent(currentResult.family_message);
 });
+
+if ("IntersectionObserver" in window) {
+  const revealObserver = new IntersectionObserver(function (entries) {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("shown");
+        revealObserver.unobserve(entry.target);
+      }
+    }
+  }, { threshold: 0.15 });
+
+  for (const element of document.querySelectorAll(".reveal")) {
+    revealObserver.observe(element);
+  }
+}
