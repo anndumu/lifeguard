@@ -36,8 +36,9 @@ export async function POST(request: Request) {
         body: JSON.stringify({
           systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
           contents: [{ role: "user", parts: parts }],
-          generationConfig: { responseMimeType: "application/json" },
+          generationConfig: { responseMimeType: "application/json", thinkingConfig: { thinkingLevel: "low" } },
         }),
+        signal: AbortSignal.timeout(20000),
       }
     );
 
