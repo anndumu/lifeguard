@@ -18,7 +18,10 @@
         <img class="logo-for-light" src="logo-light.png" alt="Lifeguard">
         <img class="logo-for-dark" src="logo-dark.png" alt="Lifeguard">
       </div>
-      <button id="theme-button" class="theme-button">Dark mode</button>
+      <div class="settings">
+        <button id="text-size-button" class="theme-button">Bigger text</button>
+        <button id="theme-button" class="theme-button">Dark mode</button>
+      </div>
     </div>
   </header>
 
@@ -31,8 +34,8 @@
     <section class="wrap checker">
       <div class="box ask">
         <h2>Paste the message you got</h2>
-        <label for="message">A text, an email, or anything that seems odd:</label>
-        <textarea id="message" rows="5" placeholder="Paste or type the message here"></textarea>
+        <label for="message">A text, an email, or anything odd. Leave out passwords and card numbers.</label>
+        <textarea id="message" rows="4" placeholder="Paste or type the message here"></textarea>
 
         <button id="check-button" class="button">Check this message</button>
 
@@ -55,7 +58,7 @@
 
         <div id="loading" class="loading" hidden>
           <span class="ring big" aria-hidden="true"></span>
-          <p>Lifeguard is checking...</p>
+          <p id="loading-message">Lifeguard is checking...</p>
         </div>
 
         <p id="error" class="error" hidden></p>
@@ -80,10 +83,27 @@
           <h3>What to do</h3>
           <ol id="what-to-do"></ol>
 
+          <div id="report-box" class="report-box">
+            <h3>Report it or get help</h3>
+            <ul>
+              <li>Report the scam to the FTC at <a href="https://reportfraud.ftc.gov" target="_blank" rel="noopener">ReportFraud.ftc.gov</a>.</li>
+              <li>Free helpline: AARP Fraud Watch Network, <a href="tel:18779083360">877-908-3360</a>, weekdays 8am to 8pm.</li>
+              <li>If you already shared bank or card details, call your bank using the number on your card.</li>
+            </ul>
+          </div>
+
           <div class="result-buttons">
             <button id="read-button" class="button plain">Read it to me</button>
-            <button id="family-button" class="button">Ask family by text</button>
+            <a id="family-link" class="button" href="sms:">Ask family by text</a>
           </div>
+
+          <div class="family-setup">
+            <label for="family-number">Who should "Ask family" text? (optional)</label>
+            <input type="tel" id="family-number" placeholder="Their phone number">
+            <p class="note">Saved only on this device.</p>
+          </div>
+
+          <button id="again-button" class="button plain">Check another message</button>
         </div>
       </section>
     </section>
@@ -113,7 +133,7 @@
   <footer class="footer">
     <div class="wrap reveal">
       <p>Lifeguard helps you spot scams, but it can be wrong. If something feels off, stop and call someone you trust.</p>
-      <p class="note">Photos from Unsplash.</p>
+      <p class="note">Lifeguard doesn't keep your messages. Each one is sent to Google's Gemini AI to be checked. Photos from Unsplash.</p>
     </div>
   </footer>
 

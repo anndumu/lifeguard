@@ -4,8 +4,11 @@ const photoName = document.getElementById("photo-name");
 const answerBox = document.getElementById("answer");
 const emptyText = document.getElementById("empty");
 const loadingText = document.getElementById("loading");
+const loadingMessage = document.getElementById("loading-message");
 const errorText = document.getElementById("error");
 const resultBox = document.getElementById("result");
+const familyInput = document.getElementById("family-number");
+const familyLink = document.getElementById("family-link");
 
 const VERDICT_WORDS = {
   scam: "Red flag: this is a scam",
@@ -81,7 +84,12 @@ async function checkMessage(input) {
   resultBox.hidden = true;
   errorText.hidden = true;
   loadingText.hidden = false;
+  loadingMessage.textContent = "Lifeguard is checking...";
   showAnswerBox();
+
+  const slowTimer = setTimeout(function () {
+    loadingMessage.textContent = "Still checking. This can take up to 20 seconds.";
+  }, 8000);
 
   try {
     const response = await fetch("/api/check", {
@@ -103,6 +111,7 @@ async function checkMessage(input) {
     }
   }
 
+  clearTimeout(slowTimer);
   loadingText.hidden = true;
 }
 
@@ -162,6 +171,9 @@ function showResult(result, originalText) {
     addListItem(stepList, step);
   }
 
+  document.getElementById("report-box").hidden = result.verdict === "safe";
+  updateFamilyLink();
+
   resultBox.hidden = false;
 }
 
@@ -191,8 +203,31 @@ document.getElementById("read-button").addEventListener("click", function () {
   speechSynthesis.speak(speech);
 });
 
-document.getElementById("family-button").addEventListener("click", function () {
-  window.location.href = "sms:?&body=" + encodeURIComponent(currentResult.family_message);
+function updateFamilyLink() {
+  const number = familyInput.value.replace(/[^0-9+]/g, "");
+  const message = currentResult ? currentResult.family_message : "";
+  familyLink.href = "sms:" + number + "?&body=" + encodeURIComponent(message);
+}
+
+try {
+  familyInput.value = localStorage.getItem("family-number") || "";
+} catch (error) {}
+
+familyInput.addEventListener("input", function () {
+  try {
+    localStorage.setItem("family-number", familyInput.value);
+  } catch (error) {}
+  updateFamilyLink();
+});
+
+document.getElementById("again-button").addEventListener("click", function () {
+  resultBox.hidden = true;
+  errorText.hidden = true;
+  emptyText.hidden = false;
+  messageBox.value = "";
+  clearPhoto();
+  messageBox.scrollIntoView({ block: "center" });
+  messageBox.focus();
 });
 
 if ("IntersectionObserver" in window) {

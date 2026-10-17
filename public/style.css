@@ -51,6 +51,10 @@ html {
   font-size: 137.5%;
 }
 
+html.big-text {
+  font-size: 162.5%;
+}
+
 body {
   margin: 0;
   background: var(--page);
@@ -119,6 +123,7 @@ img {
 
 .top-bar-inside {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
@@ -158,6 +163,13 @@ img {
   height: 84px;
   border-width: 20px;
   animation: spin 1.8s linear infinite;
+}
+
+.settings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-left: auto;
 }
 
 .theme-button {
@@ -253,6 +265,7 @@ textarea:focus {
   font-size: 1.1rem;
   font-weight: 700;
   text-align: center;
+  text-decoration: none;
   color: var(--on-button);
   background: var(--button);
   border: 3px solid var(--button-ledge);
@@ -439,6 +452,54 @@ li {
   margin-top: 0;
 }
 
+.report-box {
+  margin-top: 24px;
+  padding: 4px 20px 6px;
+  background: var(--page);
+  border-left: 6px solid var(--orange);
+  border-radius: 14px;
+}
+
+.report-box h3 {
+  margin-top: 16px;
+}
+
+.report-box a {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.family-setup {
+  margin-top: 28px;
+}
+
+.family-setup label {
+  font-size: 0.9rem;
+}
+
+input[type="tel"] {
+  display: block;
+  width: 100%;
+  padding: 12px 14px;
+  font: inherit;
+  color: var(--text);
+  background: var(--page);
+  border: 3px solid var(--border);
+  border-radius: 14px;
+}
+
+input[type="tel"]:focus {
+  border-color: var(--orange);
+}
+
+.family-setup .note {
+  margin: 6px 0 0;
+}
+
+#again-button {
+  margin-top: 24px;
+}
+
 /* Tips at the bottom */
 
 .tips {
@@ -549,6 +610,10 @@ li {
 
   .logo img {
     height: 44px;
+  }
+
+  html.big-text {
+    font-size: 140%;
   }
 
   .box {
