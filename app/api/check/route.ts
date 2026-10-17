@@ -1,7 +1,7 @@
 import { SYSTEM_PROMPT } from "./prompt";
 import { checkRules } from "./rules";
 
-const MODEL = "gemini-3.8-flash";
+const MODEL = "gemini-3.5-flash-lite";
 
 const FRIENDLY_ERROR = "Sorry, Lifeguard couldn't check that right now. Please try again in a minute.";
 
