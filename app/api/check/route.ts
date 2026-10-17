@@ -5,6 +5,25 @@ const MODEL = "gemini-3.8-flash";
 
 const FRIENDLY_ERROR = "Sorry, Lifeguard couldn't check that right now. Please try again in a minute.";
 
+async function askGemini(parts: object[]) {
+  return fetch(
+    "https://generativelanguage.googleapis.com/v1beta/models/" + MODEL + ":generateContent",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": process.env.GEMINI_API_KEY || "",
+      },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
+        contents: [{ role: "user", parts: parts }],
+        generationConfig: { responseMimeType: "application/json", thinkingConfig: { thinkingLevel: "low" } },
+      }),
+      signal: AbortSignal.timeout(20000),
+    }
+  );
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -25,22 +44,12 @@ export async function POST(request: Request) {
     }
     parts.push({ text: "rule_hits: " + JSON.stringify(ruleHits) });
 
-    const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/" + MODEL + ":generateContent",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": process.env.GEMINI_API_KEY || "",
-        },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-          contents: [{ role: "user", parts: parts }],
-          generationConfig: { responseMimeType: "application/json", thinkingConfig: { thinkingLevel: "low" } },
-        }),
-        signal: AbortSignal.timeout(20000),
-      }
-    );
+    let response = await askGemini(parts);
+
+    if (response.status === 503) {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      response = await askGemini(parts);
+    }
 
     if (!response.ok) {
       console.error("Gemini error", response.status, await response.text());
