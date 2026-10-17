@@ -1,13 +1,14 @@
 /* Colors: change them here. The dark mode colors are in the second block. */
 :root {
   --page: #ffffff;
-  --panel: #fff4ec;
-  --text: #1f2328;
-  --soft-text: #4a4f57;
-  --border: #1f2328;
-  --orange: #c2410c;
-  --orange-ledge: #8a2e08;
-  --on-orange: #ffffff;
+  --panel: #fff3ee;
+  --text: #0b3954;
+  --soft-text: #3d5a6c;
+  --border: #0b3954;
+  --orange: #f46036;
+  --button: #c9431a;
+  --button-ledge: #8f2c0e;
+  --on-button: #ffffff;
   --red: #c62828;
   --red-tint: #fdecec;
   --yellow: #e0a800;
@@ -18,20 +19,21 @@
 }
 
 [data-theme="dark"] {
-  --page: #13202a;
-  --panel: #1c2d3a;
-  --text: #f3f5f7;
-  --soft-text: #c9d1d9;
-  --border: #f3f5f7;
-  --orange: #ff8a4c;
-  --orange-ledge: #b8531f;
-  --on-orange: #13202a;
+  --page: #0a2230;
+  --panel: #0f3245;
+  --text: #f3f6f8;
+  --soft-text: #c5d3dc;
+  --border: #f3f6f8;
+  --orange: #f46036;
+  --button: #f46036;
+  --button-ledge: #a63a1c;
+  --on-button: #0a2230;
   --red: #ff6b6b;
-  --red-tint: #3a1f24;
+  --red-tint: #3a1f2a;
   --yellow: #ffd23f;
-  --yellow-tint: #3a3420;
+  --yellow-tint: #38341f;
   --green: #5fd068;
-  --green-tint: #1d3424;
+  --green-tint: #16352a;
   --highlight: #7a5c00;
 }
 
@@ -124,12 +126,21 @@ img {
   padding-bottom: 16px;
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  font-size: 1.3rem;
-  font-weight: 700;
+.logo img {
+  height: 56px;
+  width: auto;
+}
+
+.logo-for-dark {
+  display: none;
+}
+
+[data-theme="dark"] .logo-for-light {
+  display: none;
+}
+
+[data-theme="dark"] .logo-for-dark {
+  display: block;
 }
 
 .ring {
@@ -242,18 +253,18 @@ textarea:focus {
   font-size: 1.1rem;
   font-weight: 700;
   text-align: center;
-  color: var(--on-orange);
-  background: var(--orange);
-  border: 3px solid var(--orange-ledge);
+  color: var(--on-button);
+  background: var(--button);
+  border: 3px solid var(--button-ledge);
   border-radius: 16px;
-  box-shadow: 0 6px 0 var(--orange-ledge);
+  box-shadow: 0 6px 0 var(--button-ledge);
   cursor: pointer;
   transition: transform 0.08s, box-shadow 0.08s;
 }
 
 .button:active {
   transform: translateY(5px);
-  box-shadow: 0 1px 0 var(--orange-ledge);
+  box-shadow: 0 1px 0 var(--button-ledge);
 }
 
 .button.plain {
@@ -534,6 +545,10 @@ li {
   .hero {
     padding-top: 24px;
     padding-bottom: 24px;
+  }
+
+  .logo img {
+    height: 44px;
   }
 
   .box {

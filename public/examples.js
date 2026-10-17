@@ -22,7 +22,7 @@ const EXAMPLES = [
   },
   {
     label: "Grandchild in trouble",
-    image: "https://images.unsplash.com/photo-1758874960180-996bc2523a37?w=600&q=70&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1534768654272-e97681c3a2c7?w=600&q=70&auto=format&fit=crop",
     message: "Grandma it's me. I got in a car accident and I'm in jail. Please don't tell Mom. I need $2,000 for bail right away. The lawyer says you can pay with gift cards from the store.",
     backup: {
       verdict: "scam",
