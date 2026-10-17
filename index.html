@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lifeguard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Lifeguard</h1>
+  <p>Is this message a scam? Let's check.</p>
+
+  <label for="message">Paste the message here:</label>
+  <textarea id="message" rows="8"></textarea>
+
+  <label for="photo">Or upload a screenshot:</label>
+  <input type="file" id="photo" accept="image/*">
+
+  <button id="check-button">Check this message</button>
+
+  <div id="examples">
+    <p>Try an example:</p>
+  </div>
+
+  <p id="loading" hidden>Lifeguard is checking...</p>
+  <p id="error" hidden></p>
+
+  <div id="result" hidden>
+    <div id="verdict-banner">
+      <h2 id="verdict"></h2>
+      <p id="summary"></p>
+    </div>
+
+    <div id="message-section">
+      <h3>The message</h3>
+      <p id="highlighted-message"></p>
+    </div>
+
+    <h3>Red flags</h3>
+    <ul id="red-flags"></ul>
+
+    <h3>What to do</h3>
+    <ol id="what-to-do"></ol>
+
+    <button id="read-button">Read it to me</button>
+    <button id="family-button">Ask family</button>
+  </div>
+
+  <script src="examples.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lifeguard
 
-## Getting Started
+Lifeguard helps older adults check whether a text or email is a scam. Paste a message or upload a screenshot, and Lifeguard explains in plain words whether it's a scam, suspicious, or safe, and what to do next.
 
-First, run the development server:
+## How it works
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. Simple rules look for common scam signs, like gift cards or "final notice."
+2. Google Gemini reads the whole message and answers in a fixed JSON format.
+3. If the rules find a lot of red flags, Lifeguard never says "safe."
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The Gemini key stays on the server. The page only talks to our own `/api/check` route.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Where things are
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `public/index.html`, `public/style.css`, `public/script.js`: the page people see
+- `public/examples.js`: demo messages and backup answers for when the internet is down
+- `app/api/check/route.ts`: sends the message to Gemini
+- `app/api/check/prompt.ts`: instructions for Gemini
+- `app/api/check/rules.ts`: the simple red-flag rules
 
-## Learn More
+## Run it on your computer
 
-To learn more about Next.js, take a look at the following resources:
+1. Install Node.js.
+2. Run `npm install`.
+3. Make a file called `.env.local` containing `GEMINI_API_KEY=your-key`.
+4. Run `npm run dev` and open http://localhost:3000.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech used
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Plain HTML, CSS and JavaScript; Next.js for the API route; Google Gemini API; Vercel for hosting.
