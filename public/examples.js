@@ -5,6 +5,7 @@ const EXAMPLES = [
     message: "E-ZPass FINAL NOTICE: You have an unpaid toll of $4.15. Pay within 24 hours to avoid a $50 late fee and suspension of your license: https://ezpass-tollpay.top/pay",
     backup: {
       verdict: "scam",
+      detected_language: "English",
       summary: "This is a fake toll bill. Scammers send texts like this to steal card numbers.",
       red_flags: [
         { phrase: "FINAL NOTICE", reason: "Scammers try to scare you into acting fast." },
@@ -18,6 +19,9 @@ const EXAMPLES = [
         "If you are worried, check your toll account using the website or phone number you already trust.",
       ],
       family_message: "Hi! I got a text saying I owe a toll and need to pay through a link. I think it's a scam. Can you take a look?",
+      link_checks: [
+        { url: "https://ezpass-tollpay.top/pay", domain: "ezpass-tollpay.top", risk: "high", reason: "This uses the name E-ZPass, but it is not the real E-ZPass website." },
+      ],
     },
   },
   {
@@ -26,6 +30,7 @@ const EXAMPLES = [
     message: "Grandma it's me. I got in a car accident and I'm in jail. Please don't tell Mom. I need $2,000 for bail right away. The lawyer says you can pay with gift cards from the store.",
     backup: {
       verdict: "scam",
+      detected_language: "English",
       summary: "This looks like the \"grandchild in trouble\" scam. Real family members and lawyers don't ask for gift cards.",
       red_flags: [
         { phrase: "Please don't tell Mom", reason: "Scammers ask you to keep secrets so no one can warn you." },
@@ -46,6 +51,7 @@ const EXAMPLES = [
     message: "Hi, is this Margaret? This is Kevin from the golf club. Sorry if I have the wrong number!",
     backup: {
       verdict: "suspicious",
+      detected_language: "English",
       summary: "This could be an honest mistake, but \"wrong number\" texts are a common way scammers start a conversation.",
       red_flags: [
         { phrase: "Sorry if I have the wrong number!", reason: "Scammers often pretend to text the wrong person so they can start chatting." },
@@ -64,6 +70,7 @@ const EXAMPLES = [
     message: "Maple Street Pharmacy: Your prescription is ready for pickup. Store hours are 9am to 7pm. Reply STOP to opt out.",
     backup: {
       verdict: "safe",
+      detected_language: "English",
       summary: "This looks like a normal pharmacy reminder. It doesn't ask for money or personal information.",
       red_flags: [],
       what_to_do: [
@@ -71,6 +78,32 @@ const EXAMPLES = [
         "If you are not sure, call the pharmacy using the number on your prescription bottle.",
       ],
       family_message: "I got a text from Maple Street Pharmacy saying my prescription is ready. Seems fine, just letting you know!",
+    },
+  },
+  {
+    label: "Spanish bank text",
+    image: "https://images.unsplash.com/photo-1666301038754-b505a5ea34e8?w=600&q=70&auto=format&fit=crop",
+    message: "BANCO: Detectamos un cargo inusual de $489.00 en su tarjeta. Si no lo reconoce, verifique su cuenta de inmediato en banco-seguridad-verifica.top para evitar el bloqueo.",
+    backup: {
+      verdict: "scam",
+      detected_language: "Spanish",
+      detected_language_code: "es",
+      headline: "Bandera roja: esto es una estafa",
+      summary: "Este mensaje finge ser de su banco para robar sus datos. Los bancos no piden verificar su cuenta con un enlace.",
+      red_flags: [
+        { phrase: "verifique su cuenta de inmediato", reason: "Le apuran para que no se detenga a pensar." },
+        { phrase: "banco-seguridad-verifica.top", reason: "Este no es el sitio web real de un banco." },
+        { phrase: "para evitar el bloqueo", reason: "Las amenazas son un truco común de estafa." },
+      ],
+      what_to_do: [
+        "No toque el enlace.",
+        "Borre el mensaje.",
+        "Si está preocupado, llame a su banco al número que aparece en su tarjeta.",
+      ],
+      family_message: "Hola, recibí un mensaje del \"banco\" con un enlace para verificar mi cuenta. Creo que es una estafa. ¿Lo puedes revisar?",
+      link_checks: [
+        { url: "banco-seguridad-verifica.top", domain: "banco-seguridad-verifica.top", risk: "high", reason: "Web addresses ending in .top are often used by scammers." },
+      ],
     },
   },
 ];

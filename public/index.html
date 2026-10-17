@@ -31,6 +31,7 @@
       <p class="lead">Paste it below. Lifeguard checks it and tells you, in plain words, what to do next.</p>
     </section>
 
+    <!-- The checker: message on the left, answer on the right -->
     <section class="wrap checker">
       <div class="box ask">
         <h2>Paste the message you got</h2>
@@ -41,7 +42,25 @@
 
         <input type="file" id="photo" accept="image/*" class="visually-hidden">
         <label for="photo" class="button plain">Or check a screenshot instead</label>
-        <p id="photo-name" class="note" hidden></p>
+
+        <input type="file" id="voicemail" accept="audio/*,.mp3,.m4a,.wav,.ogg,.webm" class="visually-hidden">
+        <label for="voicemail" class="button plain">Or check a voicemail</label>
+
+        <p id="file-name" class="note" hidden></p>
+
+        <label for="language" class="language-label">Answer in this language:</label>
+        <select id="language">
+          <option value="auto">Auto (match the message)</option>
+          <option value="en">English</option>
+          <option value="es">Español (Spanish)</option>
+          <option value="zh">中文 (Chinese)</option>
+          <option value="hi">हिन्दी (Hindi)</option>
+          <option value="vi">Tiếng Việt (Vietnamese)</option>
+          <option value="ko">한국어 (Korean)</option>
+          <option value="tl">Tagalog</option>
+          <option value="ar">العربية (Arabic)</option>
+          <option value="fr">Français (French)</option>
+        </select>
 
         <h3>Try an example</h3>
         <p class="note">Tap one to see how Lifeguard works.</p>
@@ -71,14 +90,21 @@
               <p id="summary"></p>
             </div>
           </div>
+          <p id="language-line" class="note" hidden></p>
 
           <div id="message-section">
-            <h3>The message</h3>
+            <h3 id="message-heading">The message</h3>
             <p id="highlighted-message" class="message-quote"></p>
           </div>
 
           <h3>Warning signs</h3>
           <ul id="red-flags"></ul>
+
+          <div id="links-section" hidden>
+            <h3>Links we checked</h3>
+            <p class="note">We only read the address. We never open the link.</p>
+            <ul id="link-list" class="link-list"></ul>
+          </div>
 
           <h3>What to do</h3>
           <ol id="what-to-do"></ol>
@@ -96,16 +122,79 @@
             <button id="read-button" class="button plain">Read it to me</button>
             <a id="family-link" class="button" href="sms:">Ask family by text</a>
           </div>
+          <p id="trusted-hint" class="note">Tip: add <a href="#trusted">your trusted person</a> below so this goes straight to them.</p>
 
-          <div class="family-setup">
-            <label for="family-number">Who should "Ask family" text? (optional)</label>
-            <input type="tel" id="family-number" placeholder="Their phone number">
-            <p class="note">Saved only on this device.</p>
+          <!-- Follow-up questions about this message -->
+          <div class="followup">
+            <h3>Have a question? Ask Lifeguard</h3>
+            <div class="chips">
+              <button class="chip">What should I do if I already clicked?</button>
+              <button class="chip">How do I report this?</button>
+              <button class="chip">Is it safe to call them back?</button>
+            </div>
+            <div id="followup-list" class="followup-list"></div>
+            <label for="followup-input" class="visually-hidden">Your question</label>
+            <div class="followup-row">
+              <input type="text" id="followup-input" placeholder="Type your own question">
+              <button id="followup-button" class="button">Ask</button>
+            </div>
           </div>
 
           <button id="again-button" class="button plain">Check another message</button>
         </div>
       </section>
+    </section>
+
+    <!-- Trusted person, saved only on this device -->
+    <section id="trusted" class="wrap">
+      <div class="box trusted">
+        <h2>Your trusted person</h2>
+        <p>When you tap "Ask family by text," Lifeguard opens a text to this person. Saved only on this device.</p>
+        <div class="trusted-fields">
+          <div>
+            <label for="trusted-name">Their name</label>
+            <input type="text" id="trusted-name" placeholder="For example: Maria">
+          </div>
+          <div>
+            <label for="trusted-number">Their phone number</label>
+            <input type="tel" id="trusted-number" placeholder="For example: 555-123-4567">
+          </div>
+        </div>
+        <button id="trusted-remove" class="button plain">Remove</button>
+      </div>
+    </section>
+
+    <!-- Practice mode -->
+    <section id="practice" class="wrap">
+      <div class="box practice">
+        <h2>Practice: spot the scam</h2>
+        <p>Five short messages. For each one, decide: scam or safe? Gemini writes new ones every time.</p>
+        <button id="practice-start" class="button">Start practice</button>
+
+        <div id="practice-loading" class="loading" hidden>
+          <span class="ring big" aria-hidden="true"></span>
+          <p>Getting your practice messages...</p>
+        </div>
+
+        <div id="practice-game" hidden>
+          <p id="practice-progress" class="note"></p>
+          <p id="practice-message" class="message-quote practice-message"></p>
+          <div id="practice-buttons" class="practice-buttons">
+            <button id="practice-scam" class="button">Scam</button>
+            <button id="practice-safe" class="button plain">Safe</button>
+          </div>
+          <div id="practice-feedback" hidden>
+            <p id="practice-result" class="practice-result"></p>
+            <p id="practice-explanation"></p>
+            <button id="practice-next" class="button">Next message</button>
+          </div>
+        </div>
+
+        <div id="practice-end" hidden>
+          <p id="practice-score" class="practice-result"></p>
+          <button id="practice-again" class="button">Practice again</button>
+        </div>
+      </div>
     </section>
 
     <section class="wrap tips">
@@ -128,16 +217,34 @@
         </div>
       </div>
     </section>
+
+    <!-- For judges: how Gemini is used -->
+    <section class="wrap gemini">
+      <h2 class="reveal">How Lifeguard uses Google Gemini</h2>
+      <ul class="gemini-list reveal">
+        <li><strong>Reads texts and screenshots.</strong> Paste a message or add a picture of it.</li>
+        <li><strong>Listens to voicemails.</strong> Gemini writes down what the caller said, then checks it.</li>
+        <li><strong>Gives a clear, structured answer.</strong> Every check comes back in the same simple format.</li>
+        <li><strong>Quotes the exact warning signs.</strong> So we can highlight them right in the message.</li>
+        <li><strong>Checks links with a tool.</strong> Gemini asks our link checker about each address it finds. We never open the link.</li>
+        <li><strong>Answers in many languages.</strong> Spanish, Chinese, Hindi, Vietnamese, Korean, Tagalog, Arabic, French, and more.</li>
+        <li><strong>Writes practice scams.</strong> New, made-up messages for the practice quiz every time.</li>
+        <li><strong>Answers follow-up questions.</strong> Ask about the message you just checked.</li>
+      </ul>
+    </section>
   </main>
 
   <footer class="footer">
     <div class="wrap reveal">
       <p>Lifeguard helps you spot scams, but it can be wrong. If something feels off, stop and call someone you trust.</p>
-      <p class="note">Lifeguard doesn't keep your messages. Each one is sent to Google's Gemini AI to be checked. Photos from Unsplash.</p>
+      <p class="note">Lifeguard never stores your messages. Each one is sent to Google's Gemini AI to be checked. Photos from Unsplash.</p>
     </div>
   </footer>
 
   <script src="examples.js"></script>
+  <script src="practice-messages.js"></script>
   <script src="script.js"></script>
+  <script src="followup.js"></script>
+  <script src="practice.js"></script>
 </body>
 </html>

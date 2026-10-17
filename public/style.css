@@ -98,7 +98,7 @@ img {
 
 .note {
   color: var(--soft-text);
-  font-size: 0.85rem;
+  font-size: max(18px, 0.85rem);
 }
 
 :focus-visible {
@@ -174,8 +174,9 @@ img {
 
 .theme-button {
   font: inherit;
-  font-size: 0.85rem;
+  font-size: max(18px, 0.85rem);
   font-weight: 700;
+  min-height: 48px;
   padding: 10px 20px;
   color: var(--text);
   background: var(--page);
@@ -291,7 +292,8 @@ textarea:focus {
   box-shadow: 0 1px 0 var(--border);
 }
 
-#photo:focus-visible + label {
+#photo:focus-visible + label,
+#voicemail:focus-visible + label {
   outline: 4px solid var(--orange);
   outline-offset: 3px;
 }
@@ -306,7 +308,7 @@ textarea:focus {
   padding: 0;
   overflow: hidden;
   font: inherit;
-  font-size: 0.9rem;
+  font-size: max(18px, 0.9rem);
   font-weight: 700;
   text-align: left;
   color: var(--text);
@@ -469,18 +471,13 @@ li {
   font-weight: 700;
 }
 
-.family-setup {
-  margin-top: 28px;
-}
-
-.family-setup label {
-  font-size: 0.9rem;
-}
-
-input[type="tel"] {
+input[type="text"],
+input[type="tel"],
+select {
   display: block;
   width: 100%;
-  padding: 12px 14px;
+  min-height: 52px;
+  padding: 10px 14px;
   font: inherit;
   color: var(--text);
   background: var(--page);
@@ -488,12 +485,196 @@ input[type="tel"] {
   border-radius: 14px;
 }
 
-input[type="tel"]:focus {
+input[type="text"]:focus,
+input[type="tel"]:focus,
+select:focus {
   border-color: var(--orange);
 }
 
-.family-setup .note {
-  margin: 6px 0 0;
+.language-label {
+  margin-top: 24px;
+}
+
+#language-line {
+  margin: 10px 0 0;
+}
+
+/* Links we checked */
+
+.link-list {
+  padding: 0;
+  list-style: none;
+}
+
+.link-list li {
+  padding: 12px 16px;
+  background: var(--page);
+  border-left: 6px solid var(--soft-text);
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+
+.link-list li.risk-high {
+  border-left-color: var(--red);
+}
+
+.link-list li.risk-medium {
+  border-left-color: var(--yellow);
+}
+
+.link-list li.risk-low {
+  border-left-color: var(--green);
+}
+
+#trusted-hint {
+  margin-top: 14px;
+}
+
+#trusted-hint a {
+  color: var(--text);
+}
+
+/* Follow-up questions */
+
+.followup {
+  margin-top: 32px;
+  padding-top: 8px;
+  border-top: 3px dashed var(--border);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  min-height: 48px;
+  padding: 8px 16px;
+  font: inherit;
+  font-size: max(18px, 0.85rem);
+  font-weight: 700;
+  text-align: left;
+  color: var(--text);
+  background: var(--page);
+  border: 3px solid var(--border);
+  border-radius: 999px;
+  box-shadow: 0 4px 0 var(--border);
+  cursor: pointer;
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+
+.chip:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--border);
+}
+
+.followup-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.bubble {
+  max-width: 90%;
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 16px;
+}
+
+.bubble.user {
+  align-self: flex-end;
+  color: var(--on-button);
+  background: var(--button);
+}
+
+.bubble.model {
+  align-self: flex-start;
+  background: var(--page);
+  border: 2px solid var(--border);
+}
+
+.followup-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.followup-row .button {
+  width: auto;
+  margin-top: 0;
+  padding: 10px 22px;
+}
+
+.followup-row .button:disabled {
+  opacity: 0.6;
+}
+
+/* Trusted person and practice */
+
+#trusted,
+#practice {
+  padding-bottom: 48px;
+}
+
+.trusted {
+  background: var(--panel);
+}
+
+.trusted-fields {
+  display: grid;
+  gap: 16px;
+}
+
+.practice {
+  background: var(--page);
+}
+
+.practice-message {
+  font-size: 1.15rem;
+  border: 3px solid var(--border);
+}
+
+.practice-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.practice-result {
+  margin: 20px 0 6px;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.practice-result.right {
+  color: var(--green);
+}
+
+.practice-result.wrong {
+  color: var(--red);
+}
+
+/* How Lifeguard uses Gemini */
+
+.gemini {
+  padding-bottom: 64px;
+}
+
+.gemini-list {
+  display: grid;
+  gap: 14px;
+  padding: 0;
+  list-style: none;
+}
+
+.gemini-list li {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--panel);
+  border-left: 6px solid var(--orange);
+  border-radius: 14px;
 }
 
 #again-button {
@@ -577,6 +758,11 @@ input[type="tel"]:focus {
 /* Bigger screens: message on the left, answer on the right */
 
 @media (min-width: 900px) {
+  .trusted-fields,
+  .gemini-list {
+    grid-template-columns: 1fr 1fr;
+  }
+
   .checker {
     grid-template-columns: 1fr 1fr;
   }
