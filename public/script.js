@@ -165,6 +165,7 @@ async function checkMessage(input) {
   resultBox.hidden = true;
   errorText.hidden = true;
   loadingText.hidden = false;
+  stopReading();
   loadingMessage.textContent = input.audio ? "Lifeguard is listening..." : "Lifeguard is checking...";
   showAnswerBox();
 
@@ -217,6 +218,7 @@ function findBackup(text) {
 // ---------- Showing the answer ----------
 
 function showResult(result, originalText) {
+  stopReading();
   currentResult = result || {};
   const verdict = getVerdict(currentResult);
   const redFlags = Array.isArray(currentResult.red_flags) ? currentResult.red_flags : [];
@@ -367,10 +369,27 @@ function showError(message) {
   showAnswerBox();
 }
 
-// ---------- Read it to me ----------
+// ---------- Read it to me (tap again to stop) ----------
 
-document.getElementById("read-button").addEventListener("click", function () {
+const readButton = document.getElementById("read-button");
+let isReading = false;
+let currentSpeech = null;
+
+function stopReading() {
+  isReading = false;
+  currentSpeech = null;
+  readButton.textContent = "Read it to me";
+  if ("speechSynthesis" in window) {
+    speechSynthesis.cancel();
+  }
+}
+
+readButton.addEventListener("click", function () {
   if (!currentResult || !("speechSynthesis" in window)) {
+    return;
+  }
+  if (isReading) {
+    stopReading();
     return;
   }
   const language = getAnswerLanguage(currentResult);
@@ -382,9 +401,22 @@ document.getElementById("read-button").addEventListener("click", function () {
   const speech = new SpeechSynthesisUtterance(words);
   speech.lang = SPEECH_LANGUAGES[language] || language;
   speech.rate = 0.85;
+  speech.onend = function () {
+    if (currentSpeech === speech) {
+      isReading = false;
+      readButton.textContent = "Read it to me";
+    }
+  };
+  speech.onerror = speech.onend;
   speechSynthesis.cancel();
+  currentSpeech = speech;
   speechSynthesis.speak(speech);
+  isReading = true;
+  readButton.textContent = "Stop reading";
 });
+
+// Stop talking if the person leaves the page.
+window.addEventListener("pagehide", stopReading);
 
 // ---------- Ask family by text, and the trusted person ----------
 
@@ -464,6 +496,7 @@ updateFamilyLink();
 // ---------- Check another message ----------
 
 document.getElementById("again-button").addEventListener("click", function () {
+  stopReading();
   resultBox.hidden = true;
   errorText.hidden = true;
   emptyText.hidden = false;
