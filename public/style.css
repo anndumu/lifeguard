@@ -826,3 +826,23 @@ select:focus {
   font-weight: 700;
   color: var(--soft-text);
 }
+
+/* Recording from the microphone */
+
+.button.plain.recording {
+  color: #ffffff;
+  background: var(--red);
+  border-color: var(--red);
+  box-shadow: 0 6px 0 var(--border);
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+.mic-status {
+  font-weight: 700;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.75;
+  }
+}

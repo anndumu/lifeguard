@@ -46,6 +46,9 @@
         <input type="file" id="voicemail" accept="audio/*,.mp3,.m4a,.wav,.ogg,.webm" class="visually-hidden">
         <label for="voicemail" class="button plain">Or check a voicemail</label>
 
+        <button id="mic-button" class="button plain">Or say it out loud</button>
+        <p id="mic-status" class="note mic-status" hidden></p>
+
         <p id="file-name" class="note" hidden></p>
 
         <label for="language" class="language-label">Answer in this language:</label>
@@ -224,7 +227,7 @@
       <h2 class="reveal">How Lifeguard uses Google Gemini</h2>
       <ul class="gemini-list reveal">
         <li><strong>Reads texts and screenshots.</strong> Paste a message or add a picture of it.</li>
-        <li><strong>Listens to voicemails.</strong> Gemini writes down what the caller said, then checks it.</li>
+        <li><strong>Listens to voicemails and your voice.</strong> Read a message out loud or upload a voicemail. Gemini writes down what it hears, then checks it.</li>
         <li><strong>Gives a clear, structured answer.</strong> Every check comes back in the same simple format.</li>
         <li><strong>Quotes the exact warning signs.</strong> So we can highlight them right in the message.</li>
         <li><strong>Checks links with a tool.</strong> Gemini asks our link checker about each address it finds. We never open the link.</li>
@@ -245,6 +248,7 @@
   <script src="examples.js"></script>
   <script src="practice-messages.js"></script>
   <script src="script.js"></script>
+  <script src="microphone.js"></script>
   <script src="followup.js"></script>
   <script src="practice.js"></script>
 </body>

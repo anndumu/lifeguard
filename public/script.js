@@ -35,6 +35,7 @@ const DEFAULT_FAMILY_MESSAGE = "Hi! I got a message that might be a scam. Can yo
 
 let currentResult = null; // the latest answer
 let currentText = "";     // the message (or voicemail transcript) that was checked
+let currentSource = "";   // "microphone" when the person spoke the message out loud
 
 // ---------- Saving on this device (works even if the browser blocks it) ----------
 
@@ -158,6 +159,7 @@ function clearFileName() {
 
 async function checkMessage(input) {
   input.language = languageSelect.value;
+  currentSource = input.source || "";
 
   emptyText.hidden = true;
   resultBox.hidden = true;
@@ -232,7 +234,11 @@ function showResult(result, originalText) {
   // The message (or what the caller said), with the warning signs highlighted.
   currentText = originalText || currentResult.transcript || "";
   const messageSection = document.getElementById("message-section");
-  document.getElementById("message-heading").textContent = originalText ? "The message" : "What the caller said";
+  let heading = "The message";
+  if (!originalText) {
+    heading = currentSource === "microphone" ? "What we heard" : "What the caller said";
+  }
+  document.getElementById("message-heading").textContent = heading;
   if (currentText) {
     document.getElementById("highlighted-message").innerHTML = buildHighlightedHtml(currentText, redFlags);
     messageSection.hidden = false;
