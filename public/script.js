@@ -397,8 +397,9 @@ familyStatus.className = "note family-status";
 familyStatus.hidden = true;
 document.querySelector(".result-buttons").after(familyStatus);
 
+// The trusted person's phone number is only used on phones, so we hide that section on computers.
 if (!IS_PHONE) {
-  document.querySelector(".trusted p").textContent = "On a phone, \"Ask family by text\" opens a text to this person. On a computer, Lifeguard copies a message you can paste into an email or chat to them. Saved only on this device.";
+  document.getElementById("trusted").hidden = true;
 }
 
 function updateFamilyLink() {
