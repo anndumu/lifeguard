@@ -847,3 +847,8 @@ select:focus {
     opacity: 0.75;
   }
 }
+
+.family-status {
+  white-space: pre-wrap;
+  font-weight: 700;
+}

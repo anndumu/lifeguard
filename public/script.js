@@ -388,14 +388,53 @@ document.getElementById("read-button").addEventListener("click", function () {
 
 // ---------- Ask family by text, and the trusted person ----------
 
+// Phones can open a text message. Computers usually can't, so there we copy a message instead.
+const IS_PHONE = /Android|iPhone|iPod/i.test(navigator.userAgent);
+
+// A note under the family button, used on computers ("Copied! Paste it...").
+const familyStatus = document.createElement("p");
+familyStatus.className = "note family-status";
+familyStatus.hidden = true;
+document.querySelector(".result-buttons").after(familyStatus);
+
+if (!IS_PHONE) {
+  document.querySelector(".trusted p").textContent = "On a phone, \"Ask family by text\" opens a text to this person. On a computer, Lifeguard copies a message you can paste into an email or chat to them. Saved only on this device.";
+}
+
 function updateFamilyLink() {
   const number = trustedNumber.value.replace(/[^0-9+]/g, "");
   const name = trustedName.value.trim();
   const message = (currentResult && currentResult.family_message) || DEFAULT_FAMILY_MESSAGE;
-  familyLink.href = "sms:" + number + "?body=" + encodeURIComponent(message);
-  familyLink.textContent = name ? "Ask " + name + " by text" : "Ask family by text";
-  trustedHint.hidden = number !== "";
+  familyStatus.hidden = true;
+  if (IS_PHONE) {
+    familyLink.href = "sms:" + number + "?body=" + encodeURIComponent(message);
+    familyLink.textContent = name ? "Ask " + name + " by text" : "Ask family by text";
+    trustedHint.hidden = number !== "";
+  } else {
+    familyLink.href = "#";
+    familyLink.textContent = name ? "Copy a message for " + name : "Copy a message for family";
+    trustedHint.hidden = true;
+  }
 }
+
+// On computers: copy the family message plus the suspicious message, ready to paste anywhere.
+familyLink.addEventListener("click", async function (event) {
+  if (IS_PHONE) {
+    return; // phones open the text app as normal
+  }
+  event.preventDefault();
+  let text = (currentResult && currentResult.family_message) || DEFAULT_FAMILY_MESSAGE;
+  if (currentText) {
+    text += "\n\nHere's the message I got:\n\"" + currentText.slice(0, 1500) + "\"";
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    familyStatus.textContent = "Copied! Paste it into an email or message to someone you trust. Or just give them a call.";
+  } catch (error) {
+    familyStatus.textContent = "Copy this and send it to someone you trust:\n\n" + text;
+  }
+  familyStatus.hidden = false;
+});
 
 trustedName.value = recall("trusted-name");
 trustedNumber.value = recall("trusted-number") || recall("family-number");
