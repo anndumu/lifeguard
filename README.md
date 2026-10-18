@@ -2,14 +2,14 @@
 
 Lifeguard helps older adults check whether a text, email, screenshot, or voicemail is a scam. It explains in plain words whether it's a scam, suspicious, or safe, and what to do next.
 
-Live site: https://lifeguard-theta.vercel.app
+Live site: https://lifeguard.compare
 
 ## What it does
 
 - Answers with a beach flag everyone knows: red for a scam, yellow for be careful, green for safe
 - Highlights the exact warning signs in the message and explains each one
 - Checks links without ever opening them
-- Listens to voicemails and shows what the caller said
+- Listens to voicemails, or to you reading a message out loud, and shows what it heard
 - Answers in the message's language, or one you pick (Spanish, Chinese, Hindi, Vietnamese, Korean, Tagalog, Arabic, French)
 - Gives clear next steps, plus where to report a scam and a free helpline
 - Reads the answer aloud, and texts your trusted person for a second opinion
@@ -23,7 +23,7 @@ Live site: https://lifeguard-theta.vercel.app
 Lifeguard uses Google Gemini (`gemini-3.5-flash-lite` by default) in eight ways. Every call runs on our server, so the API key never reaches the browser.
 
 1. **Multimodal input.** Text, screenshots (`inlineData` images), and voicemails (`inlineData` audio: mp3, m4a, wav, ogg, webm) all go through the same check.
-2. **Audio understanding.** For voicemails, Gemini transcribes the call into a `transcript` field first, then judges it, watching for robocall tricks like "press 1" and fake government callers.
+2. **Audio understanding.** For voicemails and for messages read out loud through the microphone (recorded in the browser with `MediaRecorder`), Gemini transcribes the audio into a `transcript` field first, then judges it, watching for robocall tricks like "press 1" and fake government callers.
 3. **Structured output.** Every check returns the same JSON: `verdict`, `headline`, `summary`, `red_flags`, `what_to_do`, `family_message`, `detected_language`, `transcript`. The server validates every field, and an unknown verdict becomes "suspicious."
 4. **Grounded quotes.** Each red flag's `phrase` must be copied word for word from the message (or transcript). The page finds it, case-insensitively, and highlights it safely.
 5. **Function calling.** We declare a `check_link` tool. Gemini calls it for each web address it sees, including links it reads in screenshots or hears in voicemails. Our server runs `inspectLink()`, which only reads the address text (look-alike brand names, swapped numbers like "paypa1," link shorteners, risky endings like .top, and mismatches with the company the message claims to be from). We send the result back, allowing up to 3 rounds, and Gemini uses it in its verdict. If function calling fails, we inspect every link ourselves and pass the results into a normal JSON-mode request.
@@ -49,6 +49,7 @@ Lifeguard never stores messages, recordings, or personal details on a server. Ea
 ## Where things are
 
 - `public/index.html`, `public/style.css`, `public/script.js`: the page people see
+- `public/microphone.js`: "Say it out loud" recording
 - `public/followup.js`: follow-up questions
 - `public/practice.js`, `public/practice-messages.js`: the practice quiz and its built-in messages
 - `public/theme.js`: light/dark mode and bigger text
