@@ -46,7 +46,11 @@ export async function POST(request: Request) {
     const parts: object[] = [{ text: "Answer language: " + language }];
     if (body.audio && AUDIO_TYPES.includes(body.mimeType)) {
       parts.push({ inlineData: { mimeType: body.mimeType, data: body.audio } });
-      parts.push({ text: "This is a voicemail. Transcribe it, then check it." });
+      if (body.source === "microphone") {
+        parts.push({ text: "The person is reading a message out loud, or playing a recording near the microphone. Write down the message in transcript, then check it." });
+      } else {
+        parts.push({ text: "This is a voicemail. Transcribe it, then check it." });
+      }
     } else if (body.image && IMAGE_TYPES.includes(body.mimeType)) {
       parts.push({ inlineData: { mimeType: body.mimeType, data: body.image } });
       parts.push({ text: "Check the message in this screenshot." });
